@@ -8,6 +8,10 @@ class H5utils < Formula
   depends_on 'hdf5'
 
   def install
+	ENV.x11 # enable libpng support
+	# patch for libpng 1.5 as described by https://github.com/mxcl/homebrew/pull/6944
+	inreplace 'writepng.c', 'png_ptr->jmpbuf', 'png_jmpbuf (png_ptr)'
+	inreplace 'writepng.c', 'free(info_ptr->palette);', '/* free(info_ptr->palette); */'
     system "./configure", "--disable-debug", "--disable-dependency-tracking",
                           "--prefix=#{prefix}"
     system "make install"
